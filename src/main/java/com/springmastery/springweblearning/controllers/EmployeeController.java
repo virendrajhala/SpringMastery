@@ -1,55 +1,53 @@
 package com.springmastery.springweblearning.controllers;
 
 import com.springmastery.springweblearning.dto.EmployeeDTO;
+import com.springmastery.springweblearning.entities.EmployeeEntity;
+import com.springmastery.springweblearning.repositories.EmployeeRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
 
-//    @GetMapping(path = "/secretMsg")
-//    public String getMySecretMessage(){
-//        return "Secret Message : Reffrrf87v98vv9v";
-//    }
+    private final EmployeeRepository employeeRepository;
+
+    public EmployeeController(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
 
 
     @GetMapping("/{employeeId}")
-    public EmployeeDTO getEmployee(
+    public EmployeeEntity getEmployee(
             @PathVariable(name = "employeeId") Long id
     ){
-        return new EmployeeDTO(
-                id,
-                "Virendra",
-                "viru@gmail.com",
-                28,
-                LocalDate.of(2026,03,13),
-                true
-        );
+        Optional<EmployeeEntity> foundEmployee = employeeRepository.findById(id);
+        return foundEmployee.orElse(null);
     }
 
     @GetMapping("")
-    public String getEmployees(
+    public List<EmployeeEntity> getEmployees(
             @RequestParam(required = false) String sortKey,
             @RequestParam(required = false,name = "sortOrder") String sortBy
     ){
-        return "The passed sort Key is: " + sortKey + " and sort order is: " + sortBy;
+        System.out.println("The passed sort Key is: " + sortKey + " and sort order is: " + sortBy);
+        return employeeRepository.findAll();
     }
 
     @PostMapping(path = "/employee")
-    public EmployeeDTO saveEmployee(
-            @RequestBody EmployeeDTO employeeDTO
+    public EmployeeEntity saveEmployee(
+            @RequestBody EmployeeEntity inputEmployee
     ){
-        employeeDTO.setId(454343L);
-        return employeeDTO;
+        return employeeRepository.save(inputEmployee);
     }
 
     @PutMapping(path = "/employee")
-    public EmployeeDTO updateEmployee(
-            @RequestBody EmployeeDTO employeeDTO
+    public EmployeeEntity updateEmployee(
+            @RequestBody EmployeeEntity inputEmployee
     ){
-        return employeeDTO;
+        return employeeRepository.save(inputEmployee);
     }
 }
