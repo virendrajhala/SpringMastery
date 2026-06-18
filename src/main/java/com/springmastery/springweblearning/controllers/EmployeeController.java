@@ -3,6 +3,7 @@ package com.springmastery.springweblearning.controllers;
 import com.springmastery.springweblearning.dto.EmployeeDTO;
 import com.springmastery.springweblearning.entities.EmployeeEntity;
 import com.springmastery.springweblearning.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,16 +42,16 @@ public class EmployeeController {
 
     @PostMapping(path = "/employee")
     public ResponseEntity<EmployeeDTO> saveEmployee(
-            @RequestBody EmployeeDTO inputEmployee
+            @RequestBody @Valid EmployeeDTO inputEmployee
     ) {
         EmployeeDTO savedEmployee = employeeService.save(inputEmployee);
-        return new ResponseEntity(savedEmployee, HttpStatus.CREATED);
+        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/employee/{employeeId}")
     public ResponseEntity<EmployeeDTO> updateEmployee(
             @PathVariable(name = "employeeId") Long empId,
-            @RequestBody EmployeeDTO inputEmployee
+            @RequestBody @Valid EmployeeDTO inputEmployee
     ) {
         EmployeeDTO updatedEmployee = employeeService.updateEmployeeById(empId, inputEmployee);
         return ResponseEntity.ok(updatedEmployee);
