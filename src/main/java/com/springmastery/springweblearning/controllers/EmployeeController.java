@@ -2,6 +2,7 @@ package com.springmastery.springweblearning.controllers;
 
 import com.springmastery.springweblearning.dto.EmployeeDTO;
 import com.springmastery.springweblearning.entities.EmployeeEntity;
+import com.springmastery.springweblearning.exceptions.ResourceNotFoundException;
 import com.springmastery.springweblearning.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -28,7 +30,9 @@ public class EmployeeController {
             @PathVariable(name = "employeeId") Long id
     ) {
         Optional<EmployeeDTO> foundEmployee = employeeService.findById(id);
-        return foundEmployee.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return foundEmployee
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee Not Found with id :" + id));
     }
 
     @GetMapping("")
